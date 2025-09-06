@@ -47,13 +47,17 @@ import java.util.List;
  */
 public class MctmSession implements IDfSession {
 
+    public static final String MOCKUMENTUM_USER = "mockumentum";
+
     private final String userName;
+    private final String sessionId;
 
     private boolean connected;
 
     private MctmSession(String userName) {
         this.userName = userName;
         this.connected = true;
+        this.sessionId = userName + "_" + System.currentTimeMillis();
     }
 
     public static MctmSession create(String userName) {
@@ -149,7 +153,7 @@ public class MctmSession implements IDfSession {
 
     @Override
     public String getSessionId() throws DfException {
-        return null;
+        return sessionId;
     }
 
     @Override

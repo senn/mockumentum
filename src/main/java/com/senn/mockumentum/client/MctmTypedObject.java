@@ -17,9 +17,11 @@ import com.senn.mockumentum.internal.LinkedValueList;
 import com.senn.mockumentum.internal.ObjectIdRegistry;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,8 +34,7 @@ import java.util.stream.Collectors;
 public class MctmTypedObject implements IDfTypedObject {
 
     private final LinkedHashMap<String, LinkedValueList> properties = new LinkedHashMap<>();
-    private final LinkedHashMap<String, Boolean> propertyIsRepeating = new LinkedHashMap<>();
-    private final List<String> propertyNames = new LinkedList<>();
+    private final Set<String> repeatingProperties = new HashSet<>();
 
     private final IDfSession session;
     private final IDfId objectId;
@@ -90,7 +91,7 @@ public class MctmTypedObject implements IDfTypedObject {
 
     @Override
     public int findAttrIndex(String s) throws DfException {
-        return propertyNames.indexOf(s);
+        return new LinkedList<>(properties.keySet()).indexOf(s);
     }
 
     @Override
@@ -142,18 +143,21 @@ public class MctmTypedObject implements IDfTypedObject {
     @Override
     public IDfAttr getAttr(int i) throws DfException {
         try {
-            String name = propertyNames.get(i);
-            return new MctmAttr(name, properties.getOrDefault(name, LinkedValueList.empty()).size(), getAttrDataType(name), propertyIsRepeating.get(name));
-        } catch (DfException de) {
+            String name = new LinkedList<>(properties.keySet()).get(i);
+            return new MctmAttr(name, properties.getOrDefault(name,
+                    LinkedValueList.empty()).size(), getAttrDataType(name), repeatingProperties.contains(name));
+        }
+        catch (DfException de) {
             throw de;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new MctmException(e);
         }
     }
 
     @Override
     public int getAttrCount() throws DfException {
-        return properties.keySet().size();
+        return properties.size();
     }
 
     @Override
@@ -331,7 +335,7 @@ public class MctmTypedObject implements IDfTypedObject {
 
     @Override
     public boolean hasAttr(String s) {
-        return propertyNames.contains(s);
+        return new LinkedList<>(properties.keySet()).contains(s);
     }
 
     @Override
@@ -375,14 +379,15 @@ public class MctmTypedObject implements IDfTypedObject {
             newValues.add(iDfValue);
             newValues.addAll(postInsert);
             properties.put(s, newValues);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new MctmException(e);
         }
     }
 
     @Override
     public boolean isAttrRepeating(String s) throws DfException {
-        return propertyIsRepeating.get(s);
+        return repeatingProperties.contains(s);
     }
 
     @Override
@@ -394,7 +399,8 @@ public class MctmTypedObject implements IDfTypedObject {
     public void remove(String s, int i) throws DfException {
         try {
             properties.get(s).remove(i);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new MctmException(e);
         }
     }
@@ -402,8 +408,7 @@ public class MctmTypedObject implements IDfTypedObject {
     @Override
     public void removeAll(String s) throws DfException {
         properties.remove(s);
-        propertyNames.remove(s);
-        propertyIsRepeating.remove(s);
+        repeatingProperties.remove(s);
     }
 
     @Override
@@ -470,7 +475,10 @@ public class MctmTypedObject implements IDfTypedObject {
             } else {
                 values.set(i, iDfValue);
             }
-        } catch (Exception e) {
+            properties.put(s, values);
+            repeatingProperties.add(s);
+        }
+        catch (Exception e) {
             throw new MctmException(e);
         }
     }
@@ -500,8 +508,9 @@ public class MctmTypedObject implements IDfTypedObject {
         try {
             LinkedValueList values = properties.get(s);
             values.subList(0, i);
-           properties.put(s, values);
-        } catch (Exception e) {
+            properties.put(s, values);
+        }
+        catch (Exception e) {
             throw new MctmException(e);
         }
     }

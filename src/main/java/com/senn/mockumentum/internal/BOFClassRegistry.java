@@ -1,12 +1,16 @@
 package com.senn.mockumentum.internal;
 
 import com.documentum.fc.client.IDfSysObject;
+import com.documentum.fc.common.DfDocbaseConstants;
 import com.senn.mockumentum.client.MctmSysObject;
 import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BOFClassRegistry {
+
+    public static final String BASE_SUPER_TYPE = "_base";
 
     private static final Map<String, String> superTypeMapping = new HashMap<>();
     private static final Map<String, Class<? extends IDfSysObject>> bofClassMapping = new HashMap<>();
@@ -29,7 +33,10 @@ public class BOFClassRegistry {
         return superTypeMapping.get(objectType);
     }
 
-    public static Class<? extends IDfSysObject> getBOFClass(@NotNull String objectType) {
+    public static Class<? extends IDfSysObject> getBOFClass(@Nullable String objectType) {
+        if  (objectType == null) {
+            return bofClassMapping.get(DfDocbaseConstants.DM_SYSOBJECT);
+        }
         return bofClassMapping.get(objectType);
     }
 }
