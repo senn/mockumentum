@@ -3,7 +3,6 @@ package com.senn.mockumentum.internal;
 import com.documentum.fc.common.IDfValue;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * {@link LinkedList} wrapper that holds a dataType associated with an attribute

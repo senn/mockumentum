@@ -6,12 +6,12 @@ import com.senn.mockumentum.client.MctmFolder;
 import com.senn.mockumentum.client.MctmSession;
 import com.senn.mockumentum.client.MctmSysObject;
 import com.senn.mockumentum.internal.BOFClassRegistry;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Main entrypoint for Mockumentum context
  */
-public class Mockumentum {
+public final class Mockumentum {
 
     static {
         registerObjectType("dm_sysobject", "_base", MctmSysObject.class);
@@ -20,16 +20,16 @@ public class Mockumentum {
         registerObjectType("dm_document", "dm_sysobject", MctmSysObject.class);
     }
 
-
-    public static IDfSession session(@Nonnull String userName) {
+    @NotNull
+    public static IDfSession session(@NotNull String userName) {
         return MctmSession.create(userName);
     }
 
-    public static void registerObjectType(@Nonnull String objectType, @Nonnull String superType, Class<? extends IDfSysObject> bofClass) {
+    public static void registerObjectType(@NotNull String objectType, @NotNull String superType, Class<? extends IDfSysObject> bofClass) {
         BOFClassRegistry.registerObjectType(objectType, superType, bofClass);
     }
 
-    public static void registerObjectType(@Nonnull String objectType, @Nonnull String superType) {
+    public static void registerObjectType(@NotNull String objectType, @NotNull String superType) {
         Class<? extends IDfSysObject> parentBofClass = BOFClassRegistry.getBOFClass(superType);
         registerObjectType(objectType, superType, parentBofClass);
     }
