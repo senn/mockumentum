@@ -4,14 +4,14 @@ import com.documentum.fc.client.IDfSysObject;
 import com.senn.mockumentum.client.MctmSysObject;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class BOFClassRegistry {
 
     private static final Map<String, String> superTypeMapping = new HashMap<>();
     private static final Map<String, Class<? extends IDfSysObject>> bofClassMapping = new HashMap<>();
 
-    public static void registerObjectType(@Nonnull String objectType, @Nonnull String superType, Class<? extends IDfSysObject> bofClass) {
+    public static void registerObjectType(@NotNull String objectType, @NotNull String superType, Class<? extends IDfSysObject> bofClass) {
         if (bofClass == null) {
             bofClass = MctmSysObject.class;
         }
@@ -25,11 +25,11 @@ public class BOFClassRegistry {
         }
     }
 
-    public static String getSuperType(@Nonnull String objectType) {
+    public static String getSuperType(@NotNull String objectType) {
         return superTypeMapping.get(objectType);
     }
 
-    public static Class<? extends IDfSysObject> getBOFClass(@Nonnull String objectType) {
+    public static Class<? extends IDfSysObject> getBOFClass(@NotNull String objectType) {
         return bofClassMapping.get(objectType);
     }
 }
